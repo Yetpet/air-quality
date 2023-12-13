@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit.logger import get_logger
 import numpy as np
 import pandas as pd
+import plotly.express as px
 import joblib as jb
 from sklearn.preprocessing import LabelEncoder
 from datetime import datetime
@@ -9,6 +10,14 @@ import folium
 from folium.plugins import MarkerCluster
 from branca.colormap import linear
 import pickle as pk
+import bokeh
+from bokeh.plotting import figure, show
+from bokeh.plotting import figure, show
+from bokeh.tile_providers import get_provider, Vendors
+from bokeh.io import output_notebook, push_notebook
+from bokeh.models import HoverTool, ColumnDataSource
+
+# ...
 
 LOGGER = get_logger(__name__)
 
@@ -121,46 +130,135 @@ def run():
         #return predictions
         return predictions.flatten()  # Flatten the predictions to a 1D array
 
-    # Function to create a folium map
-    def create_map(lon, lat, predictions):
-        # Create a colormap for AQI values
-        colormap = linear.RdYlGn_11.scale(min(predictions), max(predictions))
+    # # Function to create a folium map
+    # def create_map(lon, lat, predictions):
+    #     # Create a colormap for AQI values
+    #     colormap = linear.RdYlGn_11.scale(min(predictions), max(predictions))
 
-        # Function to assign colors based on AQI category
-        def assign_color(aqi_value):
-            if aqi_value == 5:
-                return 'red'
-            elif aqi_value == 4:
-                return 'darkorange'
-            elif aqi_value == 3:
-                return 'yellow'
-            elif aqi_value == 2:
-                return 'lightgreen'
-            else:
-                return 'green'
+    #     # Function to assign colors based on AQI category
+    #     def assign_color(aqi_value):
+    #         if aqi_value == 5:
+    #             return 'red'
+    #         elif aqi_value == 4:
+    #             return 'darkorange'
+    #         elif aqi_value == 3:
+    #             return 'yellow'
+    #         elif aqi_value == 2:
+    #             return 'lightgreen'
+    #         else:
+    #             return 'green'
 
-        m = folium.Map(location=[lon, lat], zoom_start=8)
+    #     m = folium.Map(location=[lon, lat], zoom_start=8)
 
-        # Add markers with custom icons and tooltips
-        # for lat, lon, aqi_value in zip([9.0820, 9.5, 10], [8.6753, 8.8, 9], predictions):
-        #     folium.Marker(
-        #         location=[lat, lon],
-        #         popup=f"AQI: {aqi_value}",
-        #         icon=folium.Icon(color=assign_color(aqi_value))
-        #     ).add_to(m)
-        # Add marker with custom icon and tooltip
-        tooltip = f"AQI: {predictions[0]}, CO: {predictions[1]}, NO: {predictions[2]}, NO2: {predictions[3]}, O3: {predictions[4]}, SO2: {predictions[5]}, PM2.5: {predictions[6]}, PM10: {predictions[7]}, NH3: {predictions[8]}"
-        folium.Marker(
-            location=[lat, lon],
-            popup=tooltip,
-            icon=folium.Icon(color=assign_color(predictions[0]))
-        ).add_to(m)
+    #     # Add markers with custom icons and tooltips
+    #     # for lat, lon, aqi_value in zip([9.0820, 9.5, 10], [8.6753, 8.8, 9], predictions):
+    #     #     folium.Marker(
+    #     #         location=[lat, lon],
+    #     #         popup=f"AQI: {aqi_value}",
+    #     #         icon=folium.Icon(color=assign_color(aqi_value))
+    #     #     ).add_to(m)
+    #     # Add marker with custom icon and tooltip
+    #     tooltip = f"AQI: {predictions[0]}, CO: {predictions[1]}, NO: {predictions[2]}, NO2: {predictions[3]}, O3: {predictions[4]}, SO2: {predictions[5]}, PM2.5: {predictions[6]}, PM10: {predictions[7]}, NH3: {predictions[8]}"
+    #     folium.Marker(
+    #         location=[lat, lon],
+    #         popup=tooltip,
+    #         icon=folium.Icon(color=assign_color(predictions[0]))
+    #     ).add_to(m)
 
-        # # Add marker with tooltip containing predicted values
-        # tooltip = f"AQI: {predictions[0]}, CO: {predictions[1]}, NO: {predictions[2]}, NO2: {predictions[3]}, O3: {predictions[4]}, SO2: {predictions[5]}, PM2.5: {predictions[6]}, PM10: {predictions[7]}, NH3: {predictions[8]}"
-        # folium.Marker([lon, lat], popup=tooltip).add_to(m)
+    #     # # Add marker with tooltip containing predicted values
+    #     # tooltip = f"AQI: {predictions[0]}, CO: {predictions[1]}, NO: {predictions[2]}, NO2: {predictions[3]}, O3: {predictions[4]}, SO2: {predictions[5]}, PM2.5: {predictions[6]}, PM10: {predictions[7]}, NH3: {predictions[8]}"
+    #     # folium.Marker([lon, lat], popup=tooltip).add_to(m)
 
-        return m
+    #     return m
+
+    # # Function to create a Plotly Express scatter map
+    # def create_plotly_map(lat, lon, predictions):
+    #     hover_data = ["AQI", "CO", "NO", "NO2", "O3", "SO2", "PM2.5", "PM10", "NH3"]
+    #     # color = predictions["AQI"]
+
+    #     # Create a DataFrame with user-input latitude and longitude
+    #     user_location_df = pd.DataFrame({"lon": [lon], "lat": [lat]})
+
+    #     fig = px.scatter_mapbox(
+    #         predictions,
+    #         lon=lon,  # Use the user-input longitude
+    #         lat=lat,  # Use the user-input latitude
+    #         hover_data=hover_data,
+    #         # color=color,
+    #         color_continuous_scale=px.colors.sequential.Viridis,
+    #         title=f"Air Quality Map for Location ({lat}, {lon})",
+    #     )
+
+    #     # Add user location as a scatter point
+    #     fig.add_trace(px.scatter_mapbox(user_location_df, lon="lon", lat="lat").data[0])
+
+
+    #     return fig
+
+    # # Function to create a Plotly Express scatter map
+    # def create_plotly_map(lon, lat, predictions):
+    #     hover_data = ["AQI", "CO", "NO", "NO2", "O3", "SO2", "PM2.5", "PM10", "NH3"]
+    #     # color = predictions[:, 0]  # Assuming AQI is the first column, adjust if needed
+
+    #     # Create a DataFrame with user-input latitude and longitude
+    #     user_location_df = pd.DataFrame({"lon": [lon], "lat": [lat]})
+
+    #     fig = px.scatter_mapbox(
+    #         user_location_df,  # Update here, assuming lon and lat are correctly formatted
+    #         lon="lon",
+    #         lat="lat",
+    #         hover_data=hover_data,
+    #         color_discrete_sequence=["red"],  # Color for user location
+    #         title=f"Air Quality Map for Location ({lat}, {lon})"
+    #     )
+
+    #     # Add scatter map for predictions
+    #     fig.add_trace(px.scatter_mapbox(
+    #         predictions,
+    #         lon=lon,  # Use the user-input longitude
+    #         lat=lat,  # Use the user-input latitude
+    #         hover_data=hover_data,
+    #         # color=color,  # Assign colors based on AQI value
+    #         color_continuous_scale=px.colors.sequential.Viridis,
+    #     ).data[0])
+
+    #     return fig
+
+
+
+    # Function to create a Bokeh map
+    def create_bokeh_map(lon, lat, predictions):
+        # Assuming predictions has AQI values
+        p = figure(x_range=(lon - 1, lon + 1),
+                y_range=(lat - 1, lat + 1),
+                # plot_width=800,
+                title="Air Quality Map",
+                tools="pan,box_zoom,wheel_zoom,reset,save",
+                x_axis_label='Longitude',
+                y_axis_label='Latitude',
+                toolbar_location="below",
+                tooltips=[("Longitude", f"{lon}"), ("Latitude", f"{lat}"), ("AQI", "@aqi")]
+                )
+
+        tile_provider = get_provider(Vendors.CARTODBPOSITRON)
+        p.add_tile(tile_provider)
+
+        # Add a circle to represent the user input location
+        p.circle(x=[lon], y=[lat], size=10, color="blue", alpha=0.7)
+
+        # Add circles to represent other locations with colors based on AQI values
+        # Assuming AQI is the only prediction value
+        colors = ["red" if aqi >= 5 else "darkorange" if aqi == 4 else "yellow" if aqi == 3 else "lightgreen" if aqi == 2 else "green" for aqi in predictions]
+
+        # Assuming you want to add some latitude and longitude values from predictions
+        latitudes = [lat + 0.01 * i for i in range(len(predictions))]
+        longitudes = [lon + 0.01 * i for i in range(len(predictions))]
+
+        p.circle(x=longitudes, y=latitudes, size=10, color=colors, alpha=0.5)
+
+        return p
+
+
 
     # Streamlit UI
     #st.title("Air Quality Prediction for Nigerian States")
@@ -185,10 +283,20 @@ def run():
         #                "Prediction": predictions.flatten()}))
 
 
-        # Create and display folium map
+        # # Create and display folium map
+        # st.write("### Air Quality Map:")
+        # folium_map = create_map(lon, lat, predictions)
+        # st.write(folium_map)
+
+        # # Create and display Plotly Express map
+        # st.write("### Air Quality Map:")
+        # plotly_map = create_plotly_map(lon, lat, predictions)  # Make sure to pass the correct DataFrame
+        # st.plotly_chart(plotly_map)
+
+        # Create and display Bokeh map
         st.write("### Air Quality Map:")
-        folium_map = create_map(lon, lat, predictions)
-        st.write(folium_map)
+        bokeh_map = create_bokeh_map(lon, lat, predictions)
+        st.bokeh_chart(bokeh_map)
 
 
 if __name__ == "__main__":
