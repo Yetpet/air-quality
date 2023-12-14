@@ -194,7 +194,7 @@ def run():
             </div>
         """
         folium.Marker(
-            location=[lon, lat],
+            location=[lat, lon],
             popup=folium.Popup(tooltip, max_width=300),
             icon=folium.Icon(color=assign_color(overall_aqi), prefix='fa', icon='info-circle')
         ).add_to(m)
