@@ -40,8 +40,19 @@ def run():
     )
 
     # Read data from CSV file
-    file_path = 'path/to/your/csv/file.csv'
+    file_path = 'nigerian_states.csv'
     state_coordinates_df = pd.read_csv(file_path)
+
+    # Display the table of Nigerian states and coordinates
+    st.write("## Nigerian States and Coordinates")
+    # Display the table of Nigerian states and coordinates
+    show_coordinates_table = st.checkbox("Show Nigerian States and Coordinates")
+    if show_coordinates_table:
+        # Convert DataFrame to markdown table without index
+        markdown_table = state_coordinates_df.to_markdown(index=False)
+
+        # Display the markdown table using st.markdown
+        st.markdown(markdown_table, unsafe_allow_html=True)
 
     # Assuming 'scaler' is already fitted on the training data
     global scaler_fitted 
@@ -109,27 +120,18 @@ def run():
 
         columns_to_normalize = ['lon', 'lat', 'month', 'day', 'hour','state_label']
 
-        # Extract the features to be normalized
-        # features_to_normalize = nigeria_air_pollution[columns_to_normalize]
-        
         # Normalize the input features using the fitted scaler
-        #input_features = np.array([[lon, lat, month, day, hour, state_label]])  # Convert to NumPy array
-        #normalized_features = pd.DataFrame(scaler.fit_transform(input_features), columns=columns_to_normalize)
         normalized_features = scaler.transform(input_features)
-        # normalized_features = pd.DataFrame(scaler.transform(input_features), columns=columns_to_normalize).to_numpy()
 
         # Combine the normalized features with other non-normalized columns
         input_data = pd.DataFrame(normalized_features, columns=columns_to_normalize)
 
 
         # Combine the normalized features with other non-normalized columns
-        # input_data = pd.concat([input_features.drop(columns=columns_to_normalize), normalized_features], axis=1)
         #new_data = pd.DataFrame([[7.5153071,5.454095299, 12,15,21, 14]], columns=['lon', 'lat', 'month', 'day', 'hour','state_label'])
 
         # Make predictions using the trained model
         predictions = model.predict(input_data)
-
-
         #predictions = np.random.rand(9)  # Dummy values for demonstration
 
         #return predictions
@@ -140,7 +142,7 @@ def run():
         # Create a colormap for AQI values
         colormap = linear.RdYlGn_11.scale(min(predictions), max(predictions))
 
-            # Function to assign colors based on AQI category
+        # Function to assign colors based on AQI category
         def assign_color(aqi_value):
                 if 4 < aqi_value < 5:
                     return 'red'
@@ -192,7 +194,7 @@ def run():
             </div>
         """
         folium.Marker(
-            location=[lat, lon],
+            location=[lon, lat],
             popup=folium.Popup(tooltip, max_width=300),
             icon=folium.Icon(color=assign_color(overall_aqi), prefix='fa', icon='info-circle')
         ).add_to(m)
