@@ -19,7 +19,6 @@ streamlit run air-quality.py
 ## Usage
 - Enter the state name and environmental factors for prediction.
 - Explore the air quality pollutants on the map.
-- Visualize trends in air quality metrics over time.
 - Feel free to customize and enhance the app according to your needs!
 
 ## Contributing
