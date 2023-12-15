@@ -14,7 +14,7 @@ pip install -r requirements.txt
 ### Running the App
 To run the app, use the following command:
 ```bash
-streamlit run air-quality.py
+streamlit run Air_Quality.py
 ```
 ## Usage
 - Enter the state name and environmental factors for prediction.
