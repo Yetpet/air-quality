@@ -35,16 +35,14 @@ def run():
     file_path = 'nigerian_states.csv'
     state_coordinates_df = pd.read_csv(file_path)
 
-    # Display the table of Nigerian states and coordinates
+    # Display Nigerian states and coordinates
     st.write("## Nigerian States and Coordinates")
     show_coordinates_table = st.checkbox("Show Nigerian States and Coordinates")
     if show_coordinates_table:
         # Convert DataFrame to markdown table without index
         markdown_table = state_coordinates_df.to_markdown(index=False)
-        # Display the markdown table using st.markdown
         st.markdown(markdown_table, unsafe_allow_html=True)
 
-    # Assuming 'scaler' is already fitted on the training data
     global scaler_fitted 
     scaler_fitted = False  # Flag to check if the scaler is fitted
 
@@ -52,7 +50,7 @@ def run():
     try:
         with open('mgbr_model.joblib', 'rb') as model_file:
             model = jb.load(model_file)
-            print(type(model))  # Add this line to check the type of 'model'
+            print(type(model))  
     except FileNotFoundError:
         st.warning("Model not found. Please retrain the model.")
     try:
@@ -79,8 +77,6 @@ def run():
 
     # Function to preprocess input and make predictions
     def make_predictions(lon, lat, date, state_name):
-        # global scaler_fitted  # Declare it as global to modify the global variable
-
         if not scaler_fitted:
             st.warning("Scaler is not fitted. Please retrain the model to generate a fitted scaler.")
             return np.zeros(9)  # Return zeros or any default values as needed
