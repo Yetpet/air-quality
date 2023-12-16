@@ -17,7 +17,7 @@ To run the app, use the following command:
 streamlit run Air_Quality.py
 ```
 ## Usage
-- Enter the state name and environmental factors for prediction.
+- Enter the state name and coordinates for prediction.
 - Explore the air quality pollutants on the map.
 - Feel free to customize and enhance the app according to your needs!
 
@@ -26,3 +26,5 @@ If you have suggestions, improvements, or bug reports, please feel free to submi
 
 ## Acknowledgments
 Big thanks to the [AI Saturday Lagos](https://github.com/AISaturdaysLagos) team for providing a platform that not only teaches machine learning but plays a pivotal role in democratizing artificial intelligence in Nigeria🙌.
+
+Special thanks to [Joscha Cüppers](https://www.linkedin.com/in/joscha-c%C3%BCppers-33aa13244/) for his invaluable support and exceptional hands-on mentorship🙌.
