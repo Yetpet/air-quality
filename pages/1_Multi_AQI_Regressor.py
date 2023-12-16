@@ -48,13 +48,13 @@ def run():
 
     # Load the trained model and scaler
     try:
-        with open('mgbr_model.joblib', 'rb') as model_file:
+        with open('mgbr_1_model.joblib', 'rb') as model_file:
             model = jb.load(model_file)
             print(type(model))  
     except FileNotFoundError:
         st.warning("Model not found. Please retrain the model.")
     try:
-        with open('scaler.pkl', 'rb') as scaler_file:
+        with open('scaler_mgbr.pkl', 'rb') as scaler_file:
             scaler = jb.load(scaler_file)
         scaler_fitted = True
     except FileNotFoundError:
