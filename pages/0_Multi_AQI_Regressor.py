@@ -179,10 +179,28 @@ def run():
         # Make predictions
         predictions = make_predictions(lon, lat, date, state_name)
 
+        # # Display predictions
+        # st.write("### Predicted Air Quality Values for {}: ".format(state_name))
+        # st.write(pd.DataFrame({"Air Pollutant": ['AQI', 'CO', 'NO', 'NO2', 'O3', 'SO2', 'PM2.5', 'PM10', 'NH3'],
+        #                         "Prediction": predictions}))
+
         # Display predictions
+        #st.write("### Predicted Air Quality Values for {}: ".format(state_name))
+        predictions_df = pd.DataFrame({"Air Pollutant": ['AQI', 'CO', 'NO', 'NO2', 'O3', 'SO2', 'PM2.5', 'PM10', 'NH3'],
+                                        "Prediction": predictions})
+        # st.write(predictions_df)
+
+        # # Add a unique identifier to the column names
+        # predictions_df['Air Pollutant'] = predictions_df['Air Pollutant'] + '_Prediction'
+
+        # Reshape the DataFrame to Format 2
+        predictions_formatted = predictions_df.set_index('Air Pollutant').transpose()
+
+        # Display Formatted Predictions
         st.write("### Predicted Air Quality Values for {}: ".format(state_name))
-        st.write(pd.DataFrame({"Air Pollutant": ['AQI', 'CO', 'NO', 'NO2', 'O3', 'SO2', 'PM2.5', 'PM10', 'NH3'],
-                                "Prediction": predictions}))
+        st.write(predictions_formatted)
+
+
         # Create and display folium map
         st.write("### Air Quality Map:")
         folium_map = create_map(lon, lat, predictions)
